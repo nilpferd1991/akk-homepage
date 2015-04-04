@@ -36,6 +36,11 @@ function query_array($query, $variables=NULL) {
 	return $statement->fetchAll(PDO::FETCH_COLUMN);
 }
 
+function query_string($query, $variables=NULL) {
+	$statement = query_db($query, $variables);
+	return $statement->fetchAll();
+}
+
 function query_class($query, $variables=NULL) {
 	$statement = query_db($query, $variables);
 	return $statement->fetchAll(PDO::FETCH_CLASS);
