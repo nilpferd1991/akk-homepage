@@ -91,23 +91,15 @@ body {
 	table-layout: fixed;
 }
 
-#list {
+.ui-autocomplete {
 	position: absolute;
 	background-color: white;
 	outline: 1px solid black;
 }
 
-#list > ul {
+.ui-autocomplete li {
 	list-style-type: none;
-	padding: 5px;
-	margin: 0px;
-	font-size: 14pt;
-}
-
-#list > ul > li {
 	margin: 2px;
-}
-
-#list > ul > li:HOVER {
-	background-color: lightblue;
+	padding: 5px;
+	font-size: 14pt;
 }

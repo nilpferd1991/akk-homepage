@@ -1,14 +1,14 @@
 <?php
-include './environ.php';
+require_once './environ.php';
 
 $connected = False;
 $connection = NULL;
 
 function connect_to_db() {
 	global $connected, $connection;
-	global $db, $db_user, $db_host, $db_password;
+	global $db_user, $db_host, $db_password;
 	try {
-		$connection = new PDO("mysql:dbname=$db;host=$db_host", "$db_user", "$db_password");
+		$connection = new PDO("mysql:dbname=" . db::$db . ";host=$db_host", "$db_user", "$db_password");
 	} catch (PDOException $e) {
 		echo "Connection failed: " . $e->getMessage();
 	}  

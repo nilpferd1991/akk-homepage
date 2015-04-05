@@ -2,13 +2,15 @@
 error_reporting(E_ALL | E_STRICT);
 ini_set("display_errors", "On");
 
-include "./db_user.php";
+require_once "./db_user.php";
 
-$db = "akk";
-$dances_db = "dances";
-$users_db = "users";
-$songs_db = "songs";
-$songlists_db = "songlists";
-$artists_db = "artists";
-$playlists_db = "playlists";
-$notes_db = "notes";
+class db {
+	public static $db = "akk";
+	public static $dances_db = "dances";
+	public static $users_db = "users";
+	public static $songs_db = "songs";
+	public static $songlists_db = "songlists";
+	public static $artists_db = "artists";
+	public static $playlists_db = "playlists";
+	public static $notes_db = "notes";
+}
