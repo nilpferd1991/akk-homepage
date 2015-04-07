@@ -95,6 +95,7 @@ body {
 	position: absolute;
 	background-color: white;
 	outline: 1px solid black;
+	padding: 0;
 }
 
 .ui-autocomplete li {
@@ -102,4 +103,8 @@ body {
 	margin: 2px;
 	padding: 5px;
 	font-size: 14pt;
+}
+
+.ui-helper-hidden-accessible {
+	display: none;
 }

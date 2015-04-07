@@ -36,6 +36,9 @@ function list_dances($term) {
 	print json_encode(query_array("SELECT dance_name FROM " . db::$dances_db . " WHERE dance_name LIKE '%$term%'"));
 }
 
+function list_songs($term) {
+	print json_encode(query_array("SELECT title FROM " . db::$songs_db . " WHERE title LIKE '%$term%'"));
+}
 
 
 
