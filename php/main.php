@@ -21,4 +21,6 @@ if($param_action == "list") {
 	} else if($param_type == "dances") {
 		list_dances($param_term);
 	}
+} else if ($param_action == "search") {
+	print_songs();
 }

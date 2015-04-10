@@ -29,21 +29,21 @@ function test_password($username, $test_password) {
 
 /* LIST */
 function list_artists($term) {
-	print json_encode(query_array("SELECT artist_name FROM " . db::$artists_db . " WHERE artist_name LIKE '%$term%'"));
+	print json_encode(query_array("SELECT artist_name FROM ".db::$artists_db." WHERE artist_name LIKE '%$term%'"));
 }
 
 function list_dances($term) {
-	print json_encode(query_array("SELECT dance_name FROM " . db::$dances_db . " WHERE dance_name LIKE '%$term%'"));
+	print json_encode(query_array("SELECT dance_name FROM ".db::$dances_db." WHERE dance_name LIKE '%$term%'"));
 }
 
 function list_songs($term) {
-	print json_encode(query_array("SELECT title FROM " . db::$songs_db . " WHERE title LIKE '%$term%'"));
+	print json_encode(query_array("SELECT title FROM ".db::$songs_db." WHERE title LIKE '%$term%'"));
 }
 
+/* Search */
 
-
-function print_dances() {
-	return query_array("SELECT dance_name FROM db::$dances_db");
+function print_songs() {
+	print json_encode(query_class("SELECT song_id, title, artist_id, artist_name, dance_id, dance_name FROM ".db::$songs_db." AS ".db::$songs_db." JOIN ".db::$artists_db." AS ".db::$artists_db." USING (artist_id) JOIN ".db::$dances_db." AS ".db::$dances_db." USING (dance_id)"));
 }
 
 function add_dance($dancename) {
@@ -65,11 +65,6 @@ function get_dance($dancename) {
 	}
 }
 
-function print_artists() {
-	return query_array("SELECT artist_name FROM db::$artists_db");
-}
-
-
 function add_artist($artistname) {
 	query_db("INSERT INTO db::$artists_db (artist_name)
 			VALUES (:artistname);",
@@ -89,10 +84,6 @@ function get_artist($artistname) {
 	}
 }
 
-
-function print_songs() {
-	return query_class("SELECT song_id, title, artist_name, dance_name FROM db::$songs_db AS db::$songs_db JOIN db::$artists_db AS db::$artists_db USING (artist_id) JOIN db::$dances_db AS db::$dances_db USING (dance_id)");
-}
 
 function add_song($title, $artist_name, $dance_name) {
 	query_db("INSERT INTO db::$songs_db (title, artist_id, dance_id)
