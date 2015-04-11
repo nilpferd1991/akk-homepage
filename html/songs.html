@@ -11,25 +11,31 @@
 <body>
 	<!-- Song page -->
 	<div id="searchboxes">
-		<div id="title_search">
-			<input placeholder="Title..." type="text"/>
+		<div id="title_search" class="title_search">
 		</div>
-		<div id="artist_search">
-			<input placeholder="Artist..." type="text"/>
+		<div id="artist_search" class="artist_search">
 		</div>
-		<div id="dance_search">
-			<input placeholder="Dance..." type="text"/>
+		<div id="dance_search" class="dance_search">
 		</div>
-		<div id="clear_box"></div>
 	</div>
+	<div id="clear_button"><p>Clear</p></div>
+	
+	
 	
 	<div id="results">
-		<div id="add_item"><div class="result_row"><div>Add Item</div></div></div>
+		<div id="add_item"><div class="ui-result_row"><div>Add Item</div></div></div>
 		<div id="results_table"></div>
 	</div>
 	
-	<div id="edit_frame">
-		<div id="edit_window"></div>
+	<div class="ui-overlay">
+		<div id="edit_window">
+			<div><p>Song name: </p><div id="title_input" class="title_search"></div></div>
+			<div><p>Artist name: </p><div id="artist_input" class="artist_search"></div></div>
+			<div><p>Dance name: </p><div id="dance_input" class="dance_search"></div></div>
+			<div><p>Rating: </p><div id="rating_input" class="rating"></div></div>
+			<div><p>Notes: </p><div id="notes_input" class="notes"></div></div>
+			<div><div id="submit_button" class="button"></div><div id="refresh_button" class="botton"></div></div>
+		</div>
 	</div>
 </body>
 </html>

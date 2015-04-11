@@ -1,16 +1,5 @@
 @CHARSET "UTF-8";
-
-body {
-	color: black;
-	background-color: lightgrey;
-	width: 100%;
-	height: 100%;
-	margin: 0px;
-	padding: 0px;
-	top: 0px;
-	left: 0px;
-	font-family: sans-serif;
-}
+@import url("base.css");
 
 #title {
 	position: absolute;
@@ -19,20 +8,20 @@ body {
 	text-align: center;
 }
 
-#title > p {
+#title>p {
 	font-size: 40pt;
 	padding: 0px;
 	margin: 20px;
 }
 
-#title > a {
+#title>a {
 	color: black;
 	font-size: 20pt;
 	margin: 0pt 5pt;
 	text-decoration: none;
 }
 
-#title > a:HOVER {
+#title>a:HOVER {
 	border-width: 1px 0px;
 	border-color: black;
 	border-style: solid;
@@ -47,39 +36,40 @@ body {
 	background-color: gray;
 }
 
-#searchboxes > div {
+#searchboxes>div {
 	display: table-cell;
 	table-layout: fixed;
 	text-align: center;
 	vertical-align: middle;
 }
 
-#searchboxes > div > input {
-	width: 70%;
-	font-size: 17pt;
-	padding: 7px;
-	border: none;
-}
-
-#clear_box {
+#clear_button {
 	position: absolute;
-	background-repeat: no-repeat;
-	background-image: url("../img/arrow.svg");
-	background-position: center;
-	width: 40px;
-	right: 0px;
-	height: 100%;
-	cursor: pointer;
+	width: 100%;
+	top: 120px;
+	height: 40px;
+	background-color: gray;
+	text-align: center;
+	padding: 0px;
+	display: table;
 }
 
-#clear_box:HOVER {
+#clear_button>p {
+	vertical-align: middle; display : table-cell;
+	padding: 0px;
+	margin: 0px;
+	display: table-cell;
+}
+
+#clear_button>p:HOVER {
 	background-color: white;
+	cursor: pointer;
 }
 
 #results {
 	position: absolute;
 	background-color: gray;
-	top: 160px;
+	top: 190px;
 	bottom: 40px;
 	left: 40px;
 	right: 40px;
@@ -95,37 +85,21 @@ body {
 	width: 100%;
 }
 
-.result_row {
+#edit_window {
+	background: white;
+	margin: 40px auto;
+	width: 80%;
+	display: table;
+	padding: 30px;
+}
+
+#edit_window > div {
 	display: table-row;
+	height: 40px;
 }
 
-.result_row:HOVER {
-	background-color: white;
-}
-
-.result_row > div {
-	padding: 10px 0px;
-	border-spacing: 10px;
-	text-align: center;
+#edit_window > div > * {
+	vertical-align: middle;
 	display: table-cell;
-	width: 33%;
-	cursor: pointer;
-}
-
-.ui-autocomplete {
-	position: absolute;
-	background-color: white;
-	outline: 1px solid black;
-	padding: 0;
-}
-
-.ui-autocomplete li {
-	list-style-type: none;
-	margin: 2px;
-	padding: 5px;
-	font-size: 14pt;
-}
-
-.ui-helper-hidden-accessible {
-	display: none;
+	width: 50%;
 }
