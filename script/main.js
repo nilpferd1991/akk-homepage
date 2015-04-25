@@ -3,6 +3,9 @@ function capitalizeFirstLetter (string) {
 }
 
 $.widget("custom.completion", {
+	options: {
+		autoFocus: true,
+	},
 	_create: function() {
 		ownElement = this;
 		ownElement.element.html("<input></input>")
@@ -12,19 +15,25 @@ $.widget("custom.completion", {
 		inputElement.attr("placeholder", capitalizeFirstLetter(transformDivIDIntoColumnName(inputElement)) + "...");
 		inputElement.addClass("ui-completion");
 		inputElement.autocomplete({
+			autoFocus: this.options.autoFocus,
 			source: function(request, responseFunction) {
 				column = transformDivIDIntoColumnName($(this)[0].element);
 				$.getJSON("../php/main.php", {action: "list", type: column, term: request.term},  responseFunction);
 			},
 			minLength: 0,
 			select: function(event, ui) {
-				ownElement._trigger("result", none, {value: ui.item.value});
-			}
-		}).keypress(function(event) {
-			if(event.which == 13) {
-				ownElement._trigger("result", ownElement, {value: $(this).val()});
+				ownElement._trigger("result", ownElement, {value: ui.item.value, element: this});
 			}
 		});
+		if(this.options.autoFocus == false) {
+			inputElement.keypress(function(event) {
+				if(event.keyCode == 13) {
+					$(this).autocomplete("close");
+					$(".ui-complete").hide();
+					ownElement._trigger("result", ownElement, {value: "value", element: this});
+				}
+			});
+		}
 	}
 });
 
@@ -49,13 +58,13 @@ function transformDivIDIntoColumnName(element) {
 	} 
 }
 
-function showResults(element, text) {
-	$(".ui-autocomplete").hide();
+function showResults(event, data) {
+	$("#searchboxes input").val("");
+	$("#results_table").html("");
 	
-	console.log("kh");
+	column = transformDivIDIntoColumnName(data.element);
 	
-	column = transformDivIDIntoColumnName(element);
-	$.getJSON("../php/main.php", {action: "search", type: column, term: text}, function(data) {
+	$.getJSON("../php/main.php", {action: "search", type: column, term: data.value}, function(data) {
 		$("#results_table").html("");
 		data.forEach(function(song) {
 			$("#results_table").append(transformSongIntoDiv(song));
@@ -73,5 +82,5 @@ $(document).ready(function() {
 		$("#results_table").html("");
 	});
 	
-	$("#edit_window").find("[class$=search]").completion();
+	$("#edit_window").find("[class$=search]").completion({autoFocus: false});
 });
