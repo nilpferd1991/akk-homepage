@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 04. Apr 2015 um 12:58
--- Server Version: 5.5.41-0ubuntu0.14.04.1
--- PHP-Version: 5.5.9-1ubuntu4.7
+-- Erstellungszeit: 25. Apr 2015 um 17:29
+-- Server Version: 5.5.43-0ubuntu0.14.04.1
+-- PHP-Version: 5.5.9-1ubuntu4.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -28,10 +28,18 @@ SET time_zone = "+00:00";
 
 CREATE TABLE IF NOT EXISTS `artists` (
   `artist_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(40) NOT NULL,
+  `artist_name` varchar(40) NOT NULL,
   PRIMARY KEY (`artist_id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  UNIQUE KEY `name` (`artist_name`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+
+--
+-- Daten für Tabelle `artists`
+--
+
+INSERT INTO `artists` (`artist_id`, `artist_name`) VALUES
+(3, 'Test artist'),
+(6, 'Test artist 2');
 
 -- --------------------------------------------------------
 
@@ -41,10 +49,26 @@ CREATE TABLE IF NOT EXISTS `artists` (
 
 CREATE TABLE IF NOT EXISTS `dances` (
   `dance_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(40) NOT NULL,
+  `dance_name` varchar(40) NOT NULL,
   PRIMARY KEY (`dance_id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+  UNIQUE KEY `name` (`dance_name`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
+
+--
+-- Daten für Tabelle `dances`
+--
+
+INSERT INTO `dances` (`dance_id`, `dance_name`) VALUES
+(1, 'ChaChaCha'),
+(3, 'Jive'),
+(4, 'Langsamer Walzer'),
+(6, 'Quickstep'),
+(2, 'Rumba'),
+(10, 'Salsa'),
+(9, 'Samba'),
+(7, 'Tango'),
+(8, 'Tango Argentino'),
+(5, 'Wiener Walzer');
 
 -- --------------------------------------------------------
 
@@ -106,10 +130,16 @@ CREATE TABLE IF NOT EXISTS `songs` (
   `artist_id` int(11) NOT NULL,
   `dance_id` int(11) NOT NULL,
   PRIMARY KEY (`song_id`),
-  UNIQUE KEY `title` (`title`),
   KEY `dance_id` (`dance_id`),
   KEY `artist_id` (`artist_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+--
+-- Daten für Tabelle `songs`
+--
+
+INSERT INTO `songs` (`song_id`, `title`, `artist_id`, `dance_id`) VALUES
+(3, 'Test title', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -119,11 +149,11 @@ CREATE TABLE IF NOT EXISTS `songs` (
 
 CREATE TABLE IF NOT EXISTS `users` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(30) NOT NULL,
-  `password_hash` binary(123) NOT NULL,
-  `password_salt` binary(123) NOT NULL,
+  `user_name` varchar(30) NOT NULL,
+  `password_hash` blob NOT NULL,
+  `password_salt` blob NOT NULL,
   PRIMARY KEY (`user_id`),
-  UNIQUE KEY `name` (`name`)
+  UNIQUE KEY `name` (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
