@@ -97,9 +97,10 @@
 #edit_window > div > * {
 	vertical-align: middle;
 	display: table-cell;
+    padding-top: 1px;
 	width: 50%;
 }
 
-#edit_window .ui-autocomplete-input {
-	border-bottom: black solid 1pt;
+#edit_window .ui-autocomplete-input:HOVER, #edit_window .ui-notes:HOVER {
+	outline: lightgray solid 1pt;
 }

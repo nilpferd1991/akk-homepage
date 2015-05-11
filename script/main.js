@@ -40,9 +40,62 @@ $.widget("custom.completion", {
 });
 
 $.widget("custom.rating", {
+    options: {
+        length: 5,
+        data: 0
+    },
+
+    currentStatus: 0,
+    data: 0,
+
 	_create: function() {
-		
-	}
+        var ownElement = this;
+        ownElement.data = ownElement.options.data;
+
+        // Add images
+        var length = ownElement.options.length;
+        ownElement.element.html("<div></div>");
+        var inputElement = ownElement.element.find("div");
+        inputElement.addClass("ui-rating");
+        for(var i = 0; i < length; i++) {
+            inputElement.append("<img src='../img/stars.png'/>");
+        }
+
+        // Add handlers
+
+        ownElement.update(ownElement.data);
+
+        var images = inputElement.find("img");
+        images.hover(function() {
+            ownElement.update(images.index(this) + 1);
+        }).click(function() {
+            ownElement.data = images.index(this) + 1;
+        });
+        ownElement.element.mouseleave(function() {
+            ownElement.update(ownElement.data);
+        });
+	},
+    update: function(number) {
+        var ownElement = this;
+        var images = ownElement.element.find("div > img");
+        if(number > ownElement.currentStatus) {
+            images.slice(ownElement.currentStatus, number).animate({"background-color": "black"}, 50);
+            ownElement.currentStatus = number;
+        } else if(number < ownElement.currentStatus) {
+            images.slice(number, ownElement.currentStatus).animate({"background-color": "lightgray"}, 50);
+            ownElement.currentStatus = number;
+        }
+    }
+});
+
+$.widget("custom.notes", {
+    _create: function() {
+        var ownElement = this;
+        ownElement.element.html('<textarea></textarea>');
+        var inputElement = ownElement.element.find("textarea");
+        inputElement.addClass("ui-notes");
+        inputElement.attr("placeholder", "Notes...");
+    }
 });
 
 
@@ -95,4 +148,6 @@ $(document).ready(function() {
 	var edit_window = $("#edit_window");
     edit_window.find("[class$=search]").completion({autoFocus: false});
 	edit_window.find(".rating").rating();
+    edit_window.find(".notes").notes();
+    edit_window.find(".button").button();
 });
