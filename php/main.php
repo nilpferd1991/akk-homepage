@@ -16,6 +16,13 @@ $param_action = fillIfValid("action");
 $param_type = fillIfValid("type");
 $param_term = fillIfValid("term");
 
+$param_song_id = fillIfValid("songID");
+$param_title = fillIfValid("title");
+$param_artist = fillIfValid("artist");
+$param_dance = fillIfValid("dance");
+$param_rating = fillIfValid("rating");
+$param_notes = fillIfValid("notes");
+
 
 if($param_action == "list") {
 	if($param_type == "artists") {
@@ -33,4 +40,11 @@ if($param_action == "list") {
     } else {
         print_songs($param_type, $param_term);
     }
+} else if ($param_action == "delete") {
+    delete_song($param_song_id);
+} else if ($param_action == "add") {
+    add_song($param_title, $param_artist, $param_dance, $param_rating, $param_notes);
+} else if ($param_action == "update") {
+    update_song($param_song_id, $param_title, $param_artist, $param_dance, $param_rating, $param_notes);
 }
+

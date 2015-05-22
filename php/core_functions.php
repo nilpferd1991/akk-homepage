@@ -49,16 +49,29 @@ function print_all_songs($term) {
 			WHERE (title LIKE :term) OR (artist_name LIKE :term) OR (dance_name LIKE :term)", array(":term" => "%".$term."%")));
 }
 
+/* Deletion */
+function delete_song($song_id) {
+	query_db("DELETE FROM ".db::$songs_db." WHERE song_id = :song_id", array(":song_id" => $song_id));
+}
 
+/* Adding */
+function add_song($title, $artist, $dance, $rating, $notes) {
+    $artist_id = get_artist($artist);
+    if($artist_id == NULL) {
+        add_artist($artist);
+        $artist_id = get_artist($artist);
+    }
 
+    $dance_id = get_dance($dance);
+    if($dance_id == NULL) {
+        add_dance($dance);
+        $dance_id = get_dance($dance);
+    }
 
-
-
-
-
-
-
-/* UNUSED *********************************************/
+    query_db("INSERT INTO ".db::$songs_db." (title, artist_id, dance_id)
+			VALUES (:title, :artist_id, :dance_id);",
+			array(":title" => $title, ":artist_id" => $artist_id, ":dance_id" => $dance_id));
+}
 
 function add_dance($dancename) {
 	query_db("INSERT INTO ".db::$dances_db." (dance_name)
@@ -66,7 +79,32 @@ function add_dance($dancename) {
 			array(":dancename" => $dancename));
 }
 
+function add_artist($artistname) {
+	query_db("INSERT INTO ".db::$artists_db." (artist_name)
+			VALUES (:artistname);",
+			array(":artistname" => $artistname));
+}
 
+/* Getter */
+function get_dance($dancename) {
+	$result = query_db("SELECT * FROM ".db::$dances_db." WHERE dance_name = :dancename LIMIT 1;", array(":dancename" => $dancename));
+	if($result) {
+		return $result->fetch(PDO::FETCH_OBJ);
+	} else {
+		return NULL;
+	}
+}
+
+function get_artist($artistname) {
+	$result = query_db("SELECT * FROM ".db::$artists_db." WHERE artist_name = :artistname LIMIT 1;", array(":artistname" => $artistname));
+	if($result) {
+		return $result->fetch(PDO::FETCH_OBJ);
+	} else {
+		return NULL;
+	}
+}
+
+/* UNUSED *********************************************/
 
 function add_user($username, $password) {
 	$result = create_hash_password($password);
@@ -92,51 +130,11 @@ function test_password($username, $test_password) {
 	}
 }
 
-
-
 function delete_dance($dancename) {
 	query_db("DELETE FROM ".db::$dances_db." WHERE dance_name = :dancename", array(":dancename" => $dancename));
 }
 
-function get_dance($dancename) {
-	$result = query_db("SELECT * FROM ".db::$dances_db." WHERE dance_name = :dancename LIMIT 1;", array(":dancename" => $dancename));
-	if($result) {
-		return $result->fetch(PDO::FETCH_OBJ);
-	} else {
-		return NULL;
-	}
-}
-
-function add_artist($artistname) {
-	query_db("INSERT INTO ".db::$artists_db." (artist_name)
-			VALUES (:artistname);",
-			array(":artistname" => $artistname));
-}
 
 function delete_artist($artistname) {
 	query_db("DELETE FROM ".db::$artists_db." WHERE artist_name = :artistname", array(":artistname" => $artistname));
-}
-
-function get_artist($artistname) {
-	$result = query_db("SELECT * FROM ".db::$artists_db." WHERE artist_name = :artistname LIMIT 1;", array(":artistname" => $artistname));
-	if($result) {
-		return $result->fetch(PDO::FETCH_OBJ);
-	} else {
-		return NULL;
-	}
-}
-
-
-function add_song($title, $artist_name, $dance_name) {
-	query_db("INSERT INTO ".db::$songs_db." (title, artist_id, dance_id)
-			VALUES (:title, (
-				SELECT artist_id FROM ".db::$artists_db." WHERE artist_name = :artistname LIMIT 1
-			), (
-				SELECT dance_id FROM ".db::$dances_db." WHERE dance_name = :dancename LIMIT 1
-			));",
-			array(":title" => $title, ":artistname" => $artist_name, ":dancename" => $dance_name));
-}
-
-function delete_song($song_id) {
-	query_db("DELETE FROM ".db::$songs_db." WHERE song_id = :song_id", array(":song_id" => $song_id));
 }

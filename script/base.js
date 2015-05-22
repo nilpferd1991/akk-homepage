@@ -17,7 +17,8 @@ $.widget("custom.editWindow", {
 			'<div>' +
             '    <div></div>' +
             '    <div><button id="submit_button" class="button">Save</button>' +
-            '        <button id="cancel_button" class="button">Cancel</button></div>' +
+            '         <button id="cancel_button" class="button">Cancel</button>' +
+            '         <button id="delete_button" class="button">Delete</button></div>' +
             '</div>');
 
 
@@ -28,6 +29,7 @@ $.widget("custom.editWindow", {
 
         ownElement.find("#cancel_button").click(function() { ownElement.editWindow("hide") });
         ownElement.find("#submit_button").click(function() { ownElement.editWindow("save") });
+        ownElement.find("#delete_button").click(function() { ownElement.editWindow("delete") });
 
         this.hide();
     },
@@ -63,7 +65,16 @@ $.widget("custom.editWindow", {
         if(this.currentSongID == -1) {
             this._trigger("createNewSong", null, {title: title, artist: artist, dance: dance, rating: rating, notes: notes});
         } else {
-            this._trigger("updateSong", null, {songID: this.currentSongID, title: title, artist: artist, dance: dance, rating: rating, notes: notes});
+            this._trigger("updateSong", null, {songID: this.currentSongID, title: title, artist: artist,
+                                               dance: dance, rating: rating, notes: notes});
+        }
+
+        this.hide();
+    },
+
+    delete: function() {
+        if(this.currentSongID != -1) {
+            this._trigger("deleteSong", null, {songID: this.currentSongID});
         }
 
         this.hide();

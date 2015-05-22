@@ -48,12 +48,18 @@ $(document).ready(function() {
 
 	var edit_window = $("#edit_window").editWindow({
 	    updateSong: function(event, data) {
-	        console.log(event);
+	        data.action = "update";
+	        $.get("../php/main.php", data);
 	        console.log(data);
 	    },
 	    createNewSong: function(event, data) {
-	        console.log(event);
+	        data.action = "add";
+	        $.get("../php/main.php", data);
 	        console.log(data);
+	    },
+	    deleteSong: function(event, data) {
+	        data.action = "delete";
+	        $.get("../php/main.php", data);
 	    }
 	});
 
