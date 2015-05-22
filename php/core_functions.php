@@ -51,6 +51,7 @@ function print_all_songs($term) {
 
 /* Deletion */
 function delete_song($song_id) {
+    // TODO: Delete unused dances and artists!
 	query_db("DELETE FROM ".db::$songs_db." WHERE song_id = :song_id", array(":song_id" => $song_id));
 }
 

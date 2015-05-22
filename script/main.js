@@ -6,7 +6,13 @@ function transformSongIntoDiv(song) {
 	html += "<div>" + song.artist_name + "</div>";
 	html += "<div>" + song.dance_name + "</div>";
 	html += "</div>";
-	return html;
+	var newElement = $(html);
+
+    newElement.click(function() {
+        $("#edit_window").editWindow("show", song_id);
+    });
+
+	return newElement;
 }
 
 function transformDivIDIntoColumnName(element) {
