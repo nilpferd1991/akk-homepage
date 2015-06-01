@@ -29,7 +29,7 @@ $.widget("custom.editWindow", {
 
         ownElement.find("#cancel_button").click(function() { ownElement.editWindow("hide") });
         ownElement.find("#submit_button").click(function() { ownElement.editWindow("save") });
-        ownElement.find("#delete_button").click(function() { ownElement.editWindow("delete") });
+        ownElement.find("#delete_button").click(function() { ownElement.editWindow("remove") });
 
         this.hide();
     },
@@ -41,9 +41,8 @@ $.widget("custom.editWindow", {
             this.currentSongID = -1;
         }
 
-        this.loadSong();
-
         var ownElement = this.element;
+        ownElement.editWindow("loadSong");
         ownElement.parent().show();
     },
 
@@ -72,7 +71,7 @@ $.widget("custom.editWindow", {
         this.hide();
     },
 
-    delete: function() {
+    remove: function() {
         if(this.currentSongID != -1) {
             this._trigger("deleteSong", null, {songID: this.currentSongID});
         }
@@ -89,11 +88,25 @@ $.widget("custom.editWindow", {
     },
 
     loadSong: function() {
+        var ownElement = this.element;
+
         if(this.currentSongID == -1) {
             this.reset();
         } else {
-            // TODO
+            this._trigger("callback", null, { songID: this.currentSongID, callback: function(data) { ownElement.editWindow("songLoaded", data) } });
         }
+    },
+
+    songLoaded: function(data) {
+        var ownElement = this.element;
+
+        console.log(data);
+
+        ownElement.find("#title_input").completion("value", data.title);
+        ownElement.find("#artist_input").completion("value", data.artist_name);
+        ownElement.find("#dance_input").completion("value", data.dance_name);
+        //ownElement.find("#rating_input").rating("value", data.rating);
+        //ownElement.find("#notes_input").notes("value", data.notes);
     }
 });
 
@@ -137,9 +150,12 @@ $.widget("custom.completion", {
 	    inputElement.val("");
 	},
 
-	value: function() {
+	value: function(value) {
 	    var inputElement = this.element.children("input");
-	    return inputElement.val();
+        if(value == undefined)
+	        return inputElement.val();
+        else
+            inputElement.val(value);
 	}
 });
 
@@ -196,8 +212,11 @@ $.widget("custom.rating", {
         this.update(0);
     },
 
-    value: function() {
-        return this.currentStatus;
+    value: function(value) {
+        if(value == undefined)
+            return this.currentStatus;
+        else
+        this.currentStatus = value;
     }
 });
 

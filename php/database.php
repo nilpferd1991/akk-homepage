@@ -10,7 +10,7 @@ function connect_to_db() {
 	try {
 		$connection = new PDO("mysql:dbname=" . db::$db . ";host=$db_host", "$db_user", "$db_password");
 	} catch (PDOException $e) {
-		echo "Connection failed: " . $e->getMessage();
+		die("Connection failed: " . $e->getMessage());
 	}  
 	$connected = True;
 }
@@ -27,7 +27,7 @@ function query_db($query, $variables) {
 		$statement->execute($variables);
 		return $statement;
 	} catch (PDOException $e) {
-		echo "Error in query: " . $e->getMessage();
+		die("Error in query: " . $e->getMessage());
 	}
 }
 

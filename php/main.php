@@ -46,5 +46,7 @@ if($param_action == "list") {
     add_song($param_title, $param_artist, $param_dance, $param_rating, $param_notes);
 } else if ($param_action == "update") {
     update_song($param_song_id, $param_title, $param_artist, $param_dance, $param_rating, $param_notes);
+} else if ($param_action == "get") {
+    print_song_information($param_song_id);
 }
 

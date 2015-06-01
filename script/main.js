@@ -1,15 +1,17 @@
 "use strict";
 
 function transformSongIntoDiv(song) {
+
 	var html = "<div class='ui-result_row'>";
-	html += "<div>" + song.title + "</div>";
-	html += "<div>" + song.artist_name + "</div>";
-	html += "<div>" + song.dance_name + "</div>";
+	html += "<div><p>" + song.title + "</p></div>";
+	html += "<div><p>" + song.artist_name + "</p></div>";
+	html += "<div><p>" + song.dance_name + "</p></div>";
 	html += "</div>";
 	var newElement = $(html);
 
     newElement.click(function() {
-        $("#edit_window").editWindow("show", song_id);
+
+        $("#edit_window").editWindow("show", song.song_id);
     });
 
 	return newElement;
@@ -66,7 +68,10 @@ $(document).ready(function() {
 	    deleteSong: function(event, data) {
 	        data.action = "delete";
 	        $.get("../php/main.php", data);
-	    }
+	    },
+        callback: function(event, data) {
+            $.getJSON("../php/main.php", {action: "get", songID: data.songID}, data.callback);
+        }
 	});
 
     $("#add_item").click(function() {
