@@ -101,6 +101,6 @@
 	width: 50%;
 }
 
-#edit_window .ui-autocomplete-input:HOVER, #edit_window .ui-notes:HOVER {
+#edit_window .ui-autocomplete-input:FOCUS, #edit_window .ui-notes:FOCUS {
 	outline: lightgray solid 1pt;
 }

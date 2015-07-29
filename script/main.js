@@ -10,7 +10,6 @@ function transformSongIntoDiv(song) {
 	var newElement = $(html);
 
     newElement.click(function() {
-
         $("#edit_window").editWindow("show", song.song_id);
     });
 
@@ -31,17 +30,26 @@ function transformDivIDIntoColumnName(element) {
 }
 
 function showResults(event, data) {
-	$("#searchboxes").find("input").val("");
 	$("#results_table").html("");
 
 	var column = transformDivIDIntoColumnName(data.element);
-	
-	$.getJSON("../php/main.php", {action: "search", type: column, term: data.value}, function(data) {
-		$("#results_table").html("");
-		data.forEach(function(song) {
-			$("#results_table").append(transformSongIntoDiv(song));
-		});
-	});
+    showResultsCallback(data.value, column)
+}
+
+function updateResults() {
+    var value = $("#searchboxes").find(".search").completion("value");
+    var column = "search";
+
+    showResultsCallback(value, column);
+}
+
+function showResultsCallback(value, column) {
+    $.getJSON("../php/main.php", {action: "search", type: column, term: value}, function(data) {
+        $("#results_table").html("");
+        data.forEach(function(song) {
+            $("#results_table").append(transformSongIntoDiv(song));
+        });
+    });
 }
 
 $(document).ready(function() {
@@ -58,16 +66,20 @@ $(document).ready(function() {
 	    updateSong: function(event, data) {
 	        data.action = "update";
 	        $.get("../php/main.php", data);
+            updateResults();
 	        console.log(data);
 	    },
 	    createNewSong: function(event, data) {
 	        data.action = "add";
 	        $.get("../php/main.php", data);
+            updateResults();
 	        console.log(data);
 	    },
 	    deleteSong: function(event, data) {
 	        data.action = "delete";
 	        $.get("../php/main.php", data);
+            updateResults();
+            console.log(data);
 	    },
         callback: function(event, data) {
             $.getJSON("../php/main.php", {action: "get", songID: data.songID}, data.callback);

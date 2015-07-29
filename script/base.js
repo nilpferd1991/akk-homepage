@@ -89,31 +89,30 @@ $.widget("custom.editWindow", {
 
     loadSong: function() {
         var ownElement = this.element;
+        this.reset();
 
         if(this.currentSongID == -1) {
             this.reset();
         } else {
-            this._trigger("callback", null, { songID: this.currentSongID, callback: function(data) { ownElement.editWindow("songLoaded", data) } });
+            this._trigger("callback", null, { songID: this.currentSongID,
+                callback: function(data) { ownElement.editWindow("songLoaded", data) } });
         }
     },
 
     songLoaded: function(data) {
         var ownElement = this.element;
 
-        console.log(data);
-
         ownElement.find("#title_input").completion("value", data.title);
         ownElement.find("#artist_input").completion("value", data.artist_name);
         ownElement.find("#dance_input").completion("value", data.dance_name);
-        //ownElement.find("#rating_input").rating("value", data.rating);
-        //ownElement.find("#notes_input").notes("value", data.notes);
+        ownElement.find("#rating_input").rating("value", data.rating);
+        ownElement.find("#notes_input").notes("value", data.note);
     }
 });
 
-
 $.widget("custom.completion", {
 	options: {
-		autoFocus: true
+		autoFocus: false
 	},
 	_create: function() {
         var ownElement = this;
@@ -139,7 +138,7 @@ $.widget("custom.completion", {
 				if(event.keyCode == 13) {
 					$(this).autocomplete("close");
 					$(".ui-complete").hide();
-					ownElement._trigger("result", ownElement, {value: "value", element: this});
+					ownElement._trigger("result", ownElement, {value: ownElement.value(), element: this});
 				}
 			});
 		}
@@ -200,11 +199,11 @@ $.widget("custom.rating", {
         var images = ownElement.element.find("div > img");
         if(number > ownElement.currentStatus) {
             images.slice(ownElement.currentStatus, number).animate({"background-color": "black"}, 50);
-            ownElement.currentStatus = number;
         } else if(number < ownElement.currentStatus) {
             images.slice(number, ownElement.currentStatus).animate({"background-color": "lightgray"}, 50);
-            ownElement.currentStatus = number;
         }
+
+        ownElement.currentStatus = number;
     },
 
     reset: function() {
@@ -213,10 +212,12 @@ $.widget("custom.rating", {
     },
 
     value: function(value) {
-        if(value == undefined)
+        if (value == undefined) {
             return this.currentStatus;
-        else
-        this.currentStatus = value;
+        } else {
+            this.data = value;
+            this.update(value);
+        }
     }
 });
 
@@ -234,8 +235,12 @@ $.widget("custom.notes", {
         inputElement.val("");
     },
 
-    value: function() {
+    value: function(new_value) {
         var inputElement = this.element.find("textarea");
-        return inputElement.val();
+        if (new_value == undefined) {
+            return inputElement.val();
+        } else {
+            inputElement.val(new_value);
+        }
     }
 });
