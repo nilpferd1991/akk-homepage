@@ -1,15 +1,8 @@
-import flask
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 
-class JSONBase:
-    def get_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
-    def get_json(self):
-        flask.jsonify(self.get_dict())
-
+from akk.utilities.json import JSONBase
 
 Base = declarative_base(cls=JSONBase)
 

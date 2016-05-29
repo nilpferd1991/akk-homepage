@@ -2,25 +2,18 @@ import flask
 
 from akk.db.engine import session_scope
 from akk.db.entities import Song, Artist, Dance
+from akk.utilities.json import json_answer
 
 _app = flask.Flask(__name__)
 
 
-def json_answer(func):
-    def func_wrapper(*args, **kwargs):
-        results = func(*args, **kwargs)
-
-        return flask.jsonify({"results": results})
-
-    return func_wrapper
-
-
 @_app.route("/db/list/<type>/<stub>")
 @json_answer
-def list_songs(type, stub):
+def list_something(type, stub):
     with session_scope() as s:
         class_type = None
         column_name = None
+
         if type == "songs":
             class_type = Song
             column_name = Song.song_title
@@ -37,3 +30,7 @@ def list_songs(type, stub):
         results = s.query(class_type).filter(column_name.like(stub_regex)).all()
 
         return [r.get_dict() for r in results]
+
+
+if __name__ == "__main__":
+    _app.run()

@@ -24,3 +24,29 @@ class DBTestCase(TestCase):
 
     def tearDown(self):
         self.delete_all()
+
+
+class FullDBTestCase(DBTestCase):
+    def setUp(self):
+        self.delete_all()
+
+        with session_scope() as s:
+            tango = Dance(name="Tango")
+            s.add(tango)
+
+            artist = Artist(name="Test Artist")
+            s.add(artist)
+
+            song = Song(song_title="Test Song", artist=artist, dance=tango)
+            s.add(song)
+
+            another_song = Song(song_title="Another Test Song", artist=artist, dance=tango)
+            s.add(song)
+
+            user = User(name="Herbert", password_hash="1", password_salt="2")
+            s.add(user)
+
+            playlist = Playlist(user=user, songs=[song, another_song])
+            s.add(playlist)
+
+            s.commit()
