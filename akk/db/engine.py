@@ -1,30 +1,42 @@
-import logging
 from contextlib import contextmanager
 
-import pkg_resources
+from akk import app
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-#from akk.db.entities import Base
+from akk.db.entities import Base
+from flask import g
 
-_logger = logging.getLogger("db")
 
 def _get_engine():
-    db_file_name = pkg_resources.resource_filename("akk", "db_data/database.db")
-    _logger.debug("Opening database file at {db_file_name}.".format(db_file_name=db_file_name))
+    db_file_name = app.config["DATABASE"]
     engine = create_engine('sqlite:///{db_file_name}'.format(db_file_name=db_file_name))
-
-    #if autofill:
-    #    _logger.debug("Creating tables in database.")
-    #    Base.metadata.create_all(engine)
 
     return engine
 
-SessionMaker = sessionmaker(bind=_get_engine())
+
+def init_db():
+    Base.metadata.create_all(get_engine())
+
+
+def get_engine():
+    """Opens a new database connection if there is none yet for the
+    current application context.
+    """
+    if not hasattr(g, 'sqlite_db'):
+        g.sqlite_db = _get_engine()
+    return g.sqlite_db
+
 
 @contextmanager
 def session_scope():
     """Provide a transactional scope around a series of operations."""
+
+    if not hasattr(g, 'sqlite_session_maker'):
+        g.sqlite_session_maker = sessionmaker(bind=get_engine())
+
+    SessionMaker = g.sqlite_session_maker
+
     session = SessionMaker()
     try:
         yield session
@@ -34,3 +46,5 @@ def session_scope():
         raise
     finally:
         session.close()
+
+

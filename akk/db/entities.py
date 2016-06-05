@@ -6,6 +6,7 @@ from akk.utilities.json import JSONBase
 
 Base = declarative_base(cls=JSONBase)
 
+
 class Dance(Base):
     __tablename__ = 'dances'
     dance_id = Column(Integer, primary_key=True)

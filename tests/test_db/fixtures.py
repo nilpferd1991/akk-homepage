@@ -1,34 +1,32 @@
-from unittest import TestCase
+import os
+import tempfile
 
-from akk.db.engine import session_scope
+from akk import app
+from akk.db.engine import session_scope, init_db
 from akk.db.entities import Dance, Artist, Song, User, Playlist, Songlist
+
+from flask.ext.testing import TestCase
 
 
 class DBTestCase(TestCase):
-    def delete_all(self):
-        with session_scope() as s:
+    def create_app(self):
+        return app
 
-            for dance in s.query(Dance).all():
-                s.delete(dance)
-            for artist in s.query(Artist).all():
-                s.delete(artist)
-            for song in s.query(Song).all():
-                s.delete(song)
-            for user in s.query(User).all():
-                s.delete(user)
-            for playlist in s.query(Playlist).all():
-                s.delete(playlist)
-            for songlist in s.query(Songlist).all():
-                s.delete(songlist)
-            s.commit()
+    def setUp(self):
+        self.db_fd, app.config['DATABASE'] = tempfile.mkstemp()
+        app.config['TESTING'] = True
+        self.test_client = app.test_client()
+
+        init_db()
 
     def tearDown(self):
-        self.delete_all()
+        os.close(self.db_fd)
+        os.unlink(app.config['DATABASE'])
 
 
 class FullDBTestCase(DBTestCase):
     def setUp(self):
-        self.delete_all()
+        DBTestCase.setUp(self)
 
         with session_scope() as s:
             tango = Dance(name="Tango")

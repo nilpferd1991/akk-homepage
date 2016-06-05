@@ -1,12 +1,12 @@
 import json
 
-from akk.flask_application import _app
+from akk import app
 from tests.test_db.fixtures import FullDBTestCase
 
 
 class FlaskTestCase(FullDBTestCase):
     def setUp(self):
-        self.app = _app.test_client()
+        self.app = app.test_client()
 
         FullDBTestCase.setUp(self)
 
@@ -56,4 +56,8 @@ class FlaskTestCase(FullDBTestCase):
         self.assertEqual(result.status_code, 404)
 
         result = self.app.get("db/list/wrong/type")
-        self.assertEqual(result.status_code, 500)
+        self.assertEqual(result.status_code, 404)
+
+    def test_search(self):
+        result_dict = self.get_and_assert_result("/db/search/a")
+        self.assertEqual(len(result_dict), 3)
