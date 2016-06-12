@@ -24,13 +24,13 @@ def list_dances(session, stub):
     return get_results_from_stub(session, stub, Dance)
 
 
-@json_answer_with_scope("song_title")
-def search_everywhere(session, stub):
-    song_results = {value["song_id"]: value for value in get_results_from_stub(session, stub, Song, Song.song_title)}
-    song_results.update({value["song_id"]: value for value in get_results_from_stub(session, stub, Song, Artist.name)})
-    song_results.update({value["song_id"]: value for value in get_results_from_stub(session, stub, Song, Dance.name)})
+def search_everywhere(stub):
+    with session_scope() as session:
+        song_results = {value["song_title"]: value for value in get_results_from_stub(session, stub, Song, Song.song_title)}
+        song_results.update({value["artist_name"]: value for value in get_results_from_stub(session, stub, Song, Artist.name)})
+        song_results.update({value["dance_name"]: value for value in get_results_from_stub(session, stub, Song, Dance.name)})
 
-    return list(song_results.values())
+    return flask.jsonify({"results": list(song_results.values()), "names": list(song_results.keys())})
 
 @app.route("/db/delete_song")
 def delete_song():
@@ -43,27 +43,6 @@ def delete_song():
             return "OK"
         except sqlalchemy.orm.exc.NoResultFound:
             return "Database entry not found.", 500
-
-@app.route("/db/delete/artist/<id>")
-def delete_artist(id):
-    with session_scope() as session:
-        try:
-            artist_to_delete = session.query(Artist).filter(Artist.artist_id == id).one()
-            session.delete(artist_to_delete)
-            return "OK"
-        except sqlalchemy.orm.exc.NoResultFound:
-            return "Database entry not found.", 500
-
-@app.route("/db/delete/dance/<id>")
-def delete_dance(id):
-    with session_scope() as session:
-        try:
-            dances_to_delete = session.query(Dance).filter(Dance.dance_id == id).one()
-            session.delete(dances_to_delete)
-            return "OK"
-        except sqlalchemy.orm.exc.NoResultFound:
-            return "Database entry not found.", 500
-
 
 @app.route("/db/completion")
 def completion():
@@ -86,3 +65,54 @@ def get_song(session):
     song_id = flask.request.args["songID"]
 
     return [session.query(Song).filter(Song.song_id == song_id).one().get_dict()]
+
+
+def fill_song_from_args(song, session):
+    artist = flask.request.args["artist"]
+    dance = flask.request.args["dance"]
+
+    queried_artists = session.query(Artist).filter(Artist.name == artist)
+    queried_dances = session.query(Dance).filter(Dance.name == dance)
+
+    song.song_title = flask.request.args["title"]
+
+    try:
+        song.artist_id = queried_artists.one().artist_id
+    except sqlalchemy.orm.exc.NoResultFound:
+        new_artist = Artist()
+        new_artist.name = artist
+        session.add(new_artist)
+        session.commit()
+        song.artist_id = new_artist.artist_id
+
+    try:
+        song.dance_id = queried_dances.one().dance_id
+    except sqlalchemy.orm.exc.NoResultFound:
+        new_dance = Dance()
+        new_dance.name = dance
+        session.add(new_dance)
+        session.commit()
+        song.dance_id = new_dance.dance_id
+
+
+@app.route("/db/add_song")
+def add_song():
+    with session_scope() as session:
+        new_song = Song()
+        fill_song_from_args(new_song)
+        session.add(new_song)
+
+        return "OK"
+
+@app.route("/db/update_song")
+def update_song():
+    with session_scope() as session:
+        song_id = flask.request.args["songID"]
+
+        song = session.query(Song).filter(Song.song_id == song_id).one()
+
+        fill_song_from_args(song, session)
+        session.merge(song)
+
+        return "OK"
+
